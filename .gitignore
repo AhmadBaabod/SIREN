@@ -4,3 +4,4 @@ __pycache__/
 # datasets are downloaded by each part's notebooks (see <part>/data/README.md)
 **/data/raw/
 **/data/processed/*.npy
+**/models/*_quick*
