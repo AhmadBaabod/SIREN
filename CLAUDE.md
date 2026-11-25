@@ -28,10 +28,12 @@ requirements). Never put a part's files at the repo root; three more parts will 
 traffic_predictor/   Student 2 (this user)
   traffic_predictor.ipynb       THE single notebook (brief: one Colab notebook per student, runs start
                                 to end). Parts: A data check (done), B MTGNN/DCRNN pipeline (done),
-                                C LSTM, D GCN + GRU, E results. Add new work as new parts here,
+                                C LSTM (done), D GCN + GRU, E results. Add new work as new parts here,
                                 not as new notebooks; all code inline so Colab needs no repo clone.
   data/README.md                sources; data/raw/ is gitignored, downloaded by the notebook
   data/processed/               small derived files (*.npy gitignored)
+  models/                       <name>.pt best weights + <name>_checkpoint.pt (committed, small)
+  results.csv                   summary table written at the end of the notebook
   figures/                      plots for the report
 <other parts>/       to be added later (e.g. detector, app)
 ```
@@ -61,13 +63,31 @@ User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; M
 - Never score with unmasked metrics or the PyG Temporal example's plain MSE: not comparable.
 - Test split has 12.1% zero targets (train 7.1%).
 
+## Training tools (part C1, reused by part D)
+
+- `fit(model, name, max_epochs=30, lr=1e-3, patience=5, clip=5.0)`: Adam, masked MAE on inverse-transformed
+  output, early stopping on val masked MAE. Saves `models/<name>_checkpoint.pt` every epoch and resumes from it;
+  best weights in `models/<name>.pt`. A finished checkpoint means rerunning the notebook just loads the model.
+- `predict(model, loader)` returns mph predictions and targets; `horizon_report` scores them;
+  add each model to `results` so the final `summary` / `results.csv` picks it up.
+- `QUICK_CHECK = True` runs a tiny smoke test instead of full training.
+- Cost here (4-core CPU, no GPU): LSTM about 3.5 min/epoch, 30 epochs ≈ 1 h 50 min including the notebook.
+  A graph model over 207 nodes will be slower; prefer Colab GPU for part D.
+- Run the notebook headless with
+  `jupyter nbconvert --to notebook --execute --inplace --ExecutePreprocessor.timeout=-1 traffic_predictor/traffic_predictor.ipynb`.
+
 ## Results so far (test split, masked MAE in mph)
 
 | Model | 5 min | 15 min | 30 min |
 |---|---|---|---|
+| FC-LSTM (DCRNN paper Table 2) | – | 3.44 (RMSE 6.30) | 3.77 (RMSE 7.23) |
 | DCRNN paper / official README | – / 2.18 | 2.77 / 2.67 | 3.15 / 3.08 |
 | MTGNN paper | – | 2.69 | 3.05 |
 | Naive repeat-last-reading (ours) | 2.81 | 3.50 | 4.21 |
+| LSTM baseline (ours, part C) | 2.40 | 3.01 | 3.62 |
+
+Paper numbers were checked against the papers' LaTeX tables. LSTM: one shared LSTM(2→64, 2 layers) + Linear(64→12)
+per sensor, 51,468 params, 30 epochs (hit the cap, val still slowly improving), best val 3.29.
 
 ## Environment gotchas
 
