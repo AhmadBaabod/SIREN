@@ -1,8 +1,10 @@
 torch
 torch-geometric
-# install with: pip install --no-deps torch-geometric-temporal  (avoids building torch_sparse)
-torch-geometric-temporal
 numpy
 pandas
 h5py
 matplotlib
+jupyter
+# torch-geometric-temporal is NOT listed here: as a normal dependency pip tries to build
+# torch_sparse/torch_scatter and fails. Install it separately after this file:
+#   pip install --no-deps torch-geometric-temporal

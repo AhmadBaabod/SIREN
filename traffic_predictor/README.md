@@ -22,10 +22,13 @@ traffic_predictor/
 Colab: open `traffic_predictor.ipynb` and run all cells. Locally:
 
 ```bash
-pip install torch torch-geometric numpy pandas h5py matplotlib
+cd traffic_predictor
+pip install -r requirements.txt
 pip install --no-deps torch-geometric-temporal
 jupyter notebook traffic_predictor.ipynb
 ```
+
+Install `torch-geometric-temporal` with `--no-deps` as shown. A normal install tries to build `torch_sparse`, which fails on most machines, and the notebook doesn't need it.
 
 ## Results so far
 
