@@ -71,7 +71,8 @@ User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; M
   masked MAE on inverse-transformed output, keeps best val weights. `patience=None` = no early stopping.
   `cl_step` = MTGNN curriculum (loss on first `task_level` steps, +1 every `cl_step` batches; state keeps
   `iter`/`task_level`). Saves `models/<name>_checkpoint.pt` every epoch and resumes from it; best weights in
-  `models/<name>.pt`. A finished checkpoint means rerunning the notebook just loads the model.
+  `models/<name>.pt`. Both are written with `save_atomic` (.part file + rename), checkpoint first; the checkpoint
+  also holds the best weights (`"best"`) and resuming rewrites `<name>.pt` from it. A finished checkpoint means rerunning the notebook just loads the model.
 - `fetch_trained(name)` (called by `fit`) downloads `models/<name>*.pt` from GitHub `main` raw if missing locally,
   so Colab doesn't retrain the LSTM.
 - `MTGNN_RECIPE = dict(max_epochs=100, lr=1e-3, weight_decay=1e-4, clip=5.0, patience=None, cl_step=2500)`,
