@@ -4,7 +4,7 @@ Datasets are not stored in git. Each notebook downloads what it needs into `data
 
 ## METR-LA (Student 2 · Traffic Predictor)
 
-Downloaded by `traffic_predictor/01_get_and_check_data.ipynb`.
+Downloaded by `traffic_predictor/traffic_predictor.ipynb` (part A).
 
 | File | What it is | Source |
 |---|---|---|

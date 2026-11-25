@@ -8,9 +8,9 @@ Everything for this part stays in this folder.
 
 ```
 traffic_predictor/
-  metr_la.py                    shared data pipeline + masked metrics (same as MTGNN / DCRNN)
-  01_get_and_check_data.ipynb   A. download METR-LA, count missing (zero) readings
-  02_prepare_data.ipynb         B. windows, split, normalisation, masked metrics, naive reference
+  traffic_predictor.ipynb   the one notebook, run top to bottom:
+                              A. get and check the data   B. prepare the data (MTGNN/DCRNN pipeline)
+                              C. LSTM baseline   D. GCN + GRU   E. results (C-E to do)
   data/README.md                data sources; raw/ is downloaded by the notebook (gitignored)
   data/processed/               small derived files (per-sensor missing share)
   figures/                      plots for the report
@@ -19,12 +19,12 @@ traffic_predictor/
 
 ## Run
 
-Colab: open the notebook and run all cells. Locally:
+Colab: open `traffic_predictor.ipynb` and run all cells. Locally:
 
 ```bash
 pip install torch torch-geometric numpy pandas h5py matplotlib
 pip install --no-deps torch-geometric-temporal
-jupyter notebook 01_get_and_check_data.ipynb
+jupyter notebook traffic_predictor.ipynb
 ```
 
 ## Results so far

@@ -26,16 +26,17 @@ requirements). Never put a part's files at the repo root; three more parts will 
 
 ```
 traffic_predictor/   Student 2 (this user)
-  metr_la.py                    shared data pipeline + masked metrics (import it, don't copy it)
-  01_get_and_check_data.ipynb   done
-  02_prepare_data.ipynb         done: MTGNN/DCRNN pipeline, naive reference score
+  traffic_predictor.ipynb       THE single notebook (brief: one Colab notebook per student, runs start
+                                to end). Parts: A data check (done), B MTGNN/DCRNN pipeline (done),
+                                C LSTM, D GCN + GRU, E results. Add new work as new parts here,
+                                not as new notebooks; all code inline so Colab needs no repo clone.
   data/README.md                sources; data/raw/ is gitignored, downloaded by the notebook
   data/processed/               small derived files (*.npy gitignored)
   figures/                      plots for the report
 <other parts>/       to be added later (e.g. detector, app)
 ```
 
-## METR-LA facts (from 01_get_and_check_data.ipynb)
+## METR-LA facts (from part A of the notebook)
 
 - 34,272 steps × 207 sensors, 2012-03-01 → 2012-06-27, 5-min grid with no gaps.
 - `node_values.npy` is (time, sensor, [speed mph, time-of-day 0–1]); matches `metr-la.h5` exactly.
@@ -48,7 +49,7 @@ traffic_predictor/   Student 2 (this user)
 ## Conventions for the traffic predictor (copy MTGNN, the strongest reference model)
 
 User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; METR-LA MAE 2.69 @15 min,
-3.05 @30 min) uses DCRNN's data script, so this also matches DCRNN. All of it is in `metr_la.py`
+3.05 @30 min) uses DCRNN's data script, so this also matches DCRNN. All of it is in part B of the notebook
 (checked to produce DCRNN's exact samples: 23,974 / 3,425 / 6,850 windows).
 
 - Zeros stay in the inputs as 0. No imputation (filling them is only an optional extra experiment).
