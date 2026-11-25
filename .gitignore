@@ -1,6 +1,6 @@
 .venv/
 __pycache__/
 .ipynb_checkpoints/
-# datasets are downloaded by the notebooks (see data/README.md)
-data/raw/
-data/processed/*.npy
+# datasets are downloaded by each part's notebooks (see <part>/data/README.md)
+**/data/raw/
+**/data/processed/*.npy
