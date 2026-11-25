@@ -78,7 +78,10 @@ User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; M
 - `MTGNN_RECIPE = dict(max_epochs=100, lr=1e-3, weight_decay=1e-4, clip=5.0, patience=None, cl_step=2500)`,
   from MTGNN's train.py/trainer.py; used for parts D and E (user decision: "mimic the lowest-error model").
 - On Colab, ROOT = `/content/drive/MyDrive/SIREN/traffic_predictor` (Drive mounted in part A) so checkpoints
-  survive disconnects. The user uploads trained `models/*.pt`, `results.csv`, figures back to GitHub.
+  survive disconnects. On Kaggle (`IN_KAGGLE`, detected by `KAGGLE_KERNEL_RUN_TYPE`), ROOT =
+  `/kaggle/working/traffic_predictor`; run with Save & Run All (12 h limit, needs GPU + Internet on), and to resume
+  add the previous version's output as input: `fetch_trained` copies `/kaggle/input/**/models/<name>*.pt` first.
+  Kaggle was added because Colab had no free T4 on 2026-11-25 (user decision). The user uploads trained `models/*.pt`, `results.csv`, figures back to GitHub.
 - `predict(model, loader)` returns mph predictions and targets; `horizon_report` scores them;
   add each model to `results` so the final `summary` / `results.csv` picks it up.
 - `QUICK_CHECK = True` runs a tiny smoke test instead of full training.

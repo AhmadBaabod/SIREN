@@ -28,6 +28,13 @@ choose **Runtime → Change runtime type → T4 GPU**, then **Runtime → Run al
 keeps the data, checkpoints and results in `MyDrive/SIREN/traffic_predictor/`, so after a disconnect just run all
 again and training resumes. Parts D and E train 100 epochs each (MTGNN's setting), which needs the GPU.
 
+Kaggle (when Colab has no free GPU): **Create → New Notebook → File → Import Notebook → GitHub**, pick
+`AhmadBaabod/SIREN` → `traffic_predictor/traffic_predictor.ipynb`. In **Settings** choose **Accelerator → GPU T4 x2**
+and turn **Internet on** (both need a phone-verified Kaggle account). Then **Save Version → Save & Run All (Commit)**:
+it runs on Kaggle's servers for up to 12 hours with the browser closed, and the results are in that version's
+**Output** tab under `traffic_predictor/`. If it stops early, add that output as input (**Add Input → Your Work**)
+and run again: training resumes from the checkpoints.
+
 Locally:
 
 ```bash
