@@ -26,7 +26,9 @@ requirements). Never put a part's files at the repo root; three more parts will 
 
 ```
 traffic_predictor/   Student 2 (this user)
+  metr_la.py                    shared data pipeline + masked metrics (import it, don't copy it)
   01_get_and_check_data.ipynb   done
+  02_prepare_data.ipynb         done: MTGNN/DCRNN pipeline, naive reference score
   data/README.md                sources; data/raw/ is gitignored, downloaded by the notebook
   data/processed/               small derived files (*.npy gitignored)
   figures/                      plots for the report
@@ -43,12 +45,28 @@ traffic_predictor/   Student 2 (this user)
 - PyG `METRLADatasetLoader` z-scores with zeros included (mean 53.72, std 20.26), so a missing
   reading becomes the constant −2.652 in `loader.X`. Clean stats: mean 58.46, std 13.02.
 
-## Conventions for the traffic predictor
+## Conventions for the traffic predictor (copy MTGNN, the strongest reference model)
 
-- Split in time order 70 / 10 / 20 (train / val / test), as DCRNN does.
-- Fit normalisation on the train split only, ignoring zeros.
-- Evaluate with **masked** MAE/RMSE (skip targets equal to 0) in mph, so numbers compare to DCRNN.
-- Input window 12 steps (1 hour) unless there is a reason to change it.
+User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; METR-LA MAE 2.69 @15 min,
+3.05 @30 min) uses DCRNN's data script, so this also matches DCRNN. All of it is in `metr_la.py`
+(checked to produce DCRNN's exact samples: 23,974 / 3,425 / 6,850 windows).
+
+- Zeros stay in the inputs as 0. No imputation (filling them is only an optional extra experiment).
+- Features: speed + time of day. Windows 12 in → 12 out. Windows split in time order 70/10/20.
+- Z-score only the speed channel of the inputs with train-input mean/std, zeros included
+  (mean 54.406, std 19.494). Targets stay in mph; inverse-transform model output before the loss.
+- Loss = masked MAE (`null_val=0`); metrics = masked MAE / RMSE / MAPE at 5/15/30 min
+  (output step index 0/2/5). Clip gradients at 5. MTGNN also uses curriculum learning.
+- Never score with unmasked metrics or the PyG Temporal example's plain MSE: not comparable.
+- Test split has 12.1% zero targets (train 7.1%).
+
+## Results so far (test split, masked MAE in mph)
+
+| Model | 5 min | 15 min | 30 min |
+|---|---|---|---|
+| DCRNN paper / official README | – / 2.18 | 2.77 / 2.67 | 3.15 / 3.08 |
+| MTGNN paper | – | 2.69 | 3.05 |
+| Naive repeat-last-reading (ours) | 2.81 | 3.50 | 4.21 |
 
 ## Environment gotchas
 
