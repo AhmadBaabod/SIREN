@@ -15,3 +15,13 @@ Downloaded by `traffic_predictor/traffic_predictor.ipynb` (part A).
 **Zeros mean missing.** 575,302 of 7,094,304 readings (8.11%) are 0. 77% of these come from 2,148 time steps where all 207 sensors are 0 at once. The other 23% are single sensors dropping out. Evaluate with masked MAE/RMSE that skip zero targets, as DCRNN does.
 
 `traffic_predictor/data/processed/metr_la_missing_per_sensor.csv` gives the missing share of each sensor.
+
+## PEMS-BAY (second test set, part G)
+
+Downloaded by the notebook (part G).
+
+| File | What it is | Source |
+|---|---|---|
+| `pems-bay.h5` (136 MB) | Speeds of 325 Bay Area sensors, 2017-01-01 to 2017-06-30, every 5 min, with timestamps and sensor IDs. Key `speed`, same old pandas format as `metr-la.h5`. MD5 `bfa47e6ee7cc2d665e9b62c0c95c0b41`, checked after download. | DCRNN data, mirrored on [Zenodo record 4263971](https://zenodo.org/records/4263971) |
+
+Almost nothing is missing (0.0031% zeros). The time grid has one 65-minute break, which DCRNN's script ignores, so the windows (36,465 / 5,209 / 10,419) match DCRNN's.

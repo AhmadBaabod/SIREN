@@ -1,0 +1,8 @@
+,5 min,5 min,15 min,15 min,30 min,30 min
+,MAE,RMSE,MAE,RMSE,MAE,RMSE
+DCRNN paper: FC-LSTM (trained on PEMS-BAY),,,2.05,4.19,2.2,4.55
+DCRNN paper: DCRNN (trained on PEMS-BAY),,,1.38,2.95,1.74,3.97
+MTGNN paper: MTGNN (trained on PEMS-BAY),,,1.32,2.79,1.65,3.74
+Naive: repeat last reading,0.972,1.78,1.593,3.391,2.175,4.957
+"METR-LA LSTM, as trained (no retraining)",1.055,1.908,1.576,3.319,2.069,4.589
+"METR-LA LSTM, rescaled to PEMS-BAY (no retraining)",2.657,8.834,2.962,8.829,3.162,8.693

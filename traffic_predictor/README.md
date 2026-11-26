@@ -12,10 +12,12 @@ traffic_predictor/
   traffic_predictor.ipynb   the one notebook, run top to bottom:
                               A. get and check the data   B. prepare the data (MTGNN/DCRNN pipeline)
                               C. LSTM baseline   D. GCN + GRU (T-GCN, and v2 in D5)   E. MTGNN   F. results
+                              G. PEMS-BAY: the METR-LA LSTM tested on a second dataset without retraining
   data/README.md                data sources; raw/ is downloaded by the notebook (gitignored)
   data/processed/               small derived files (per-sensor missing share)
   models/                       trained weights (<name>.pt) and resumable checkpoints (<name>_checkpoint.pt)
   results.csv                   results table written by the notebook (test split, masked MAE / RMSE)
+  results_pems_bay.csv          part G's table (PEMS-BAY test split)
   figures/                      plots for the report
   requirements.txt
 ```
@@ -72,6 +74,25 @@ Test split, masked metrics, MAE / RMSE in mph (`results.csv`):
 | GCN + GRU, T-GCN (ours) | 2.95 / 5.03 | 3.45 / 6.34 | 4.02 / 7.61 |
 | T-GCN v2: diffusion GCN + GRU encoder–decoder (ours) | **2.25 / 3.88** | 2.74 / 5.29 | 3.16 / 6.45 |
 | **MTGNN re-implementation (ours)** | **2.26 / 3.94** | **2.69 / 5.16** | **3.05 / 6.15** |
+
+### Second dataset: PEMS-BAY (part G)
+
+The brief's second test set: 325 Bay Area sensors, Jan–Jun 2017, same pipeline (36,465 / 5,209 / 10,419 windows,
+DCRNN's counts). The LSTM trained on METR-LA is run on it **without retraining** (masked MAE / RMSE in mph,
+`results_pems_bay.csv`):
+
+| Model | 5 min | 15 min | 30 min |
+|---|---|---|---|
+| FC-LSTM, trained on PEMS-BAY (DCRNN paper) | – | 2.05 / 4.19 | 2.20 / 4.55 |
+| DCRNN, trained on PEMS-BAY (paper) | – | 1.38 / 2.95 | 1.74 / 3.97 |
+| MTGNN, trained on PEMS-BAY (paper) | – | 1.32 / 2.79 | 1.65 / 3.74 |
+| Naive: repeat last reading | 0.97 / 1.78 | 1.59 / 3.39 | 2.17 / 4.96 |
+| **METR-LA LSTM, no retraining** | 1.06 / 1.91 | **1.58 / 3.32** | **2.07 / 4.59** |
+| METR-LA LSTM, rescaled to PEMS-BAY statistics | 2.66 / 8.83 | 2.96 / 8.83 | 3.16 / 8.69 |
+
+The Los Angeles model carries over a little: level with the naive forecast at 15 min, 0.10 better at 30 min, and
+better than the paper's FC-LSTM trained on PEMS-BAY. Models trained on the Bay Area itself are 0.2–0.4 mph better.
+Rescaling fails: congestion below about 36 mph then looks like a missing reading to the model.
 
 ![MAE by forecast horizon](figures/mae_by_horizon.png)
 

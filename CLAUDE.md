@@ -29,8 +29,8 @@ traffic_predictor/   Student 2 (this user)
   traffic_predictor.ipynb       THE single notebook (brief: one Colab notebook per student, runs start
                                 to end). Parts: A data check (done), B MTGNN/DCRNN pipeline (done),
                                 C LSTM (done), D GCN + GRU = T-GCN (trained), D5 T-GCN v2 (trained),
-                                E MTGNN re-implementation (trained), F results (done).
-                                D/D5/E trained on Kaggle, see below.
+                                E MTGNN re-implementation (trained), F results (done), G PEMS-BAY transfer
+                                test of the METR-LA LSTM (done). D/D5/E trained on Kaggle, see below.
                                 Add new work as new parts here,
                                 not as new notebooks; all code inline so Colab needs no repo clone.
   data/README.md                sources; data/raw/ is gitignored, downloaded by the notebook
@@ -125,6 +125,15 @@ input = last prediction (GO = 0) + known time of day of the predicted step (tod 
 xavier_normal. 373,313 params (DCRNN ≈ 372k). Same data / masked loss / MTGNN_RECIPE as the others; no scheduled
 sampling. CPU tests pass (shapes, supports, decoder time of day, overfits a batch, works with `fit` + curriculum);
 about 56 min/epoch on this CPU, so train on Kaggle (other models download from GitHub, only v2 trains).
+
+PEMS-BAY (part G, user decision 2026-11-26: only the zero-shot test of the METR-LA LSTM, no PEMS-BAY training).
+Data = DCRNN's `pems-bay.h5` from Zenodo record 4263971 (MD5 bfa47e6ee7cc2d665e9b62c0c95c0b41; key "speed", same old
+pandas layout); 52,116 × 325, 2017-01-01 → 06-30, one 65-min gap in the grid (ignored like DCRNN), 0.0031% zeros,
+mean 62.62 / std 9.59. Windows 36,465 / 5,209 / 10,419 (DCRNN's). Results (`results_pems_bay.csv`, masked MAE
+5/15/30): naive 0.97 / 1.59 / 2.17; LSTM as trained (METR-LA scaler) 1.06 / 1.58 / 2.07; LSTM rescaled to PEMS-BAY
+train stats (62.736 / 9.438) 2.66 / 2.96 / 3.16 (fails: congestion < 36 mph sits where METR-LA's missing-value z of
+−2.79 is). Papers trained on PEMS-BAY, checked in the PDFs: FC-LSTM 2.05 / 2.20, DCRNN 1.38 / 1.74 (RMSE 2.95 / 3.97),
+MTGNN 1.32 / 1.65 (RMSE 2.79 / 3.74). Part G outputs in the notebook were produced on the local CPU (≈ 1 min).
 
 Parts D/E details: T-GCN cell copied from lehaifeng/T-GCN PyTorch code (hidden 64, 2 inputs,
 normalised adjacency D^-1/2 (A+I)^T D^-1/2 from PyG's `adj_mat.npy` = DCRNN `adj_mx.pkl`, same sensor order as the
