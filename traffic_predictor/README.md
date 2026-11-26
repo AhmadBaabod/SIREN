@@ -11,7 +11,7 @@ Everything for this part stays in this folder.
 traffic_predictor/
   traffic_predictor.ipynb   the one notebook, run top to bottom:
                               A. get and check the data   B. prepare the data (MTGNN/DCRNN pipeline)
-                              C. LSTM baseline   D. GCN + GRU (T-GCN)   E. MTGNN   F. results
+                              C. LSTM baseline   D. GCN + GRU (T-GCN, and v2 in D5)   E. MTGNN   F. results
   data/README.md                data sources; raw/ is downloaded by the notebook (gitignored)
   data/processed/               small derived files (per-sensor missing share)
   models/                       trained weights (<name>.pt) and resumable checkpoints (<name>_checkpoint.pt)
@@ -70,6 +70,7 @@ Test split, masked metrics, MAE / RMSE in mph (`results.csv`):
 | Naive: repeat last reading (ours) | 2.81 / 4.63 | 3.50 / 6.42 | 4.20 / 8.05 |
 | LSTM baseline (ours) | 2.40 / 4.24 | 3.01 / 5.90 | 3.62 / 7.26 |
 | GCN + GRU, T-GCN (ours) | 2.95 / 5.03 | 3.45 / 6.34 | 4.02 / 7.61 |
+| T-GCN v2: diffusion GCN + GRU encoder–decoder (ours) | train on Kaggle | | |
 | **MTGNN re-implementation (ours)** | **2.26 / 3.94** | **2.69 / 5.16** | **3.05 / 6.15** |
 
 ![MAE by forecast horizon](figures/mae_by_horizon.png)

@@ -28,8 +28,9 @@ requirements). Never put a part's files at the repo root; three more parts will 
 traffic_predictor/   Student 2 (this user)
   traffic_predictor.ipynb       THE single notebook (brief: one Colab notebook per student, runs start
                                 to end). Parts: A data check (done), B MTGNN/DCRNN pipeline (done),
-                                C LSTM (done), D GCN + GRU = T-GCN (trained), E MTGNN re-implementation
-                                (trained), F results (done). All trained on Kaggle, see below.
+                                C LSTM (done), D GCN + GRU = T-GCN (trained), D5 T-GCN v2 (code done,
+                                train on Kaggle), E MTGNN re-implementation (trained), F results (done).
+                                D/E trained on Kaggle, see below.
                                 Add new work as new parts here,
                                 not as new notebooks; all code inline so Colab needs no repo clone.
   data/README.md                sources; data/raw/ is gitignored, downloaded by the notebook
@@ -109,8 +110,15 @@ User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; M
 
 MTGNN rebuild equals the paper's MAE (one run vs the paper's 10-run mean) and beats DCRNN; best val 2.744.
 T-GCN is behind the LSTM at every horizon (best val 3.713, still improving at epoch 100; curriculum reached 12
-steps only at epoch 73). Candidate fix discussed with the user, not built: "T-GCN v2" = two-way 2-hop diffusion
-graph conv + encoder–decoder + hidden 128 / 2 layers, under a new model name.
+steps only at epoch 73).
+
+T-GCN v2 (part D5, model name `tgcn_v2`, user decision; not trained yet): DCRNN-style DCGRU encoder–decoder on the
+road graph. Diffusion conv with DCRNN's dual random walk, supports (D^-1 A)^T and (D_in^-1 A^T)^T, K = 2 with its
+`2 P x1 - x0` recurrence; 2 layers × 64 hidden (DCRNN's METR-LA setting, not the 128 first floated); decoder
+input = last prediction (GO = 0) + known time of day of the predicted step (tod + (t+1)/288 mod 1); gate bias 1.0,
+xavier_normal. 373,313 params (DCRNN ≈ 372k). Same data / masked loss / MTGNN_RECIPE as the others; no scheduled
+sampling. CPU tests pass (shapes, supports, decoder time of day, overfits a batch, works with `fit` + curriculum);
+about 56 min/epoch on this CPU, so train on Kaggle (other models download from GitHub, only v2 trains).
 
 Parts D/E details: T-GCN cell copied from lehaifeng/T-GCN PyTorch code (hidden 64, 2 inputs,
 normalised adjacency D^-1/2 (A+I)^T D^-1/2 from PyG's `adj_mat.npy` = DCRNN `adj_mx.pkl`, same sensor order as the
