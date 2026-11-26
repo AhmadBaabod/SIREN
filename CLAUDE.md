@@ -37,6 +37,9 @@ traffic_predictor/   Student 2 (this user)
   data/processed/               small derived files (*.npy gitignored)
   models/                       <name>.pt best weights + <name>_checkpoint.pt (committed, small)
   results.csv                   summary table written at the end of the notebook
+  REPORT.md / REPORT.pdf        the written report (brief's deliverable 2). Source of truth = the claude.ai doc
+                                https://claude.ai/artifact/GcF4E9aMVnPQ49GMmzM8To; REPORT.pdf is its PDF export,
+                                REPORT.md the same text with image links to figures/. Update all three together.
   figures/                      plots for the report
 <other parts>/       to be added later (e.g. detector, app)
 ```

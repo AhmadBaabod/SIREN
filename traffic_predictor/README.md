@@ -5,6 +5,9 @@ Models: an LSTM baseline that uses each sensor's own history, the brief's GCN + 
 and a re-implementation of MTGNN, the reference model with the lowest error. The graph models are trained
 with MTGNN's recipe. All are scored with masked MAE and RMSE and compared with DCRNN and MTGNN.
 
+**Full report:** [`REPORT.md`](REPORT.md) (also as [`REPORT.pdf`](REPORT.pdf)): data, pipeline, models, training,
+results, comparison with the papers, PEMS-BAY test, limitations and what we learned.
+
 Everything for this part stays in this folder.
 
 ```
