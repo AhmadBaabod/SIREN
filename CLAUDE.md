@@ -28,8 +28,8 @@ requirements). Never put a part's files at the repo root; three more parts will 
 traffic_predictor/   Student 2 (this user)
   traffic_predictor.ipynb       THE single notebook (brief: one Colab notebook per student, runs start
                                 to end). Parts: A data check (done), B MTGNN/DCRNN pipeline (done),
-                                C LSTM (done), D GCN + GRU = T-GCN (code done, train on Colab),
-                                E MTGNN re-implementation (code done, train on Colab), F results.
+                                C LSTM (done), D GCN + GRU = T-GCN (trained), E MTGNN re-implementation
+                                (trained), F results (done). All trained on Kaggle, see below.
                                 Add new work as new parts here,
                                 not as new notebooks; all code inline so Colab needs no repo clone.
   data/README.md                sources; data/raw/ is gitignored, downloaded by the notebook
@@ -86,7 +86,10 @@ User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; M
   add each model to `results` so the final `summary` / `results.csv` picks it up.
 - `QUICK_CHECK = True` runs a tiny smoke test instead of full training.
 - Cost here (4-core CPU, no GPU): LSTM about 3.5 min/epoch, 30 epochs ≈ 1 h 50 min including the notebook.
-  T-GCN and MTGNN take roughly 10+ min/epoch on this CPU, so 100 epochs need the Colab GPU (user decision).
+  T-GCN and MTGNN take roughly 10+ min/epoch on this CPU, so 100 epochs need a GPU (user decision).
+  Kaggle T4 (2026-11-25 run, notebook `ahmadbabood2/notebookdf075be152`, version 1): T-GCN 12 s/epoch, MTGNN
+  162 s/epoch; whole notebook ≈ 4 h 50 min. The models/, results.csv, figures and the notebook's outputs in the
+  repo come from that run.
 - To refresh outputs here without training D/E: run only the cells before part D with nbclient
   (`execute_cell` per cell up to the `## D.` markdown cell), leaving D–F without outputs.
 - Run the notebook headless with
@@ -101,8 +104,15 @@ User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; M
 | MTGNN paper | – | 2.69 | 3.05 |
 | Naive repeat-last-reading (ours) | 2.81 | 3.50 | 4.21 |
 | LSTM baseline (ours, part C) | 2.40 | 3.01 | 3.62 |
+| T-GCN (ours, part D) | 2.95 | 3.45 | 4.02 |
+| MTGNN re-implementation (ours, part E) | 2.26 | 2.689 (RMSE 5.16) | 3.052 (RMSE 6.15) |
 
-Parts D/E (not trained yet): T-GCN cell copied from lehaifeng/T-GCN PyTorch code (hidden 64, 2 inputs,
+MTGNN rebuild equals the paper's MAE (one run vs the paper's 10-run mean) and beats DCRNN; best val 2.744.
+T-GCN is behind the LSTM at every horizon (best val 3.713, still improving at epoch 100; curriculum reached 12
+steps only at epoch 73). Candidate fix discussed with the user, not built: "T-GCN v2" = two-way 2-hop diffusion
+graph conv + encoder–decoder + hidden 128 / 2 layers, under a new model name.
+
+Parts D/E details: T-GCN cell copied from lehaifeng/T-GCN PyTorch code (hidden 64, 2 inputs,
 normalised adjacency D^-1/2 (A+I)^T D^-1/2 from PyG's `adj_mat.npy` = DCRNN `adj_mx.pkl`, same sensor order as the
 h5, checked), 13,644 params. MTGNN rebuilt from nnzhan/MTGNN net.py/layer.py with METR-LA defaults (k 20, node
 dim 40, 3 layers, 32/32/64/128 channels, dropout 0.3, gcn depth 2, prop alpha 0.05, tanh alpha 3):

@@ -5,5 +5,5 @@ Each part lives in its own folder with its own notebooks, data and README.
 
 | Folder | Part | Status |
 |---|---|---|
-| [`traffic_predictor/`](traffic_predictor/) | Student 2: traffic speed forecasting on METR-LA (LSTM, GCN + GRU) | LSTM baseline done; GCN + GRU (T-GCN) and MTGNN built, training on Colab next |
+| [`traffic_predictor/`](traffic_predictor/) | Student 2: traffic speed forecasting on METR-LA (LSTM, GCN + GRU) | LSTM, GCN + GRU (T-GCN) and MTGNN trained; MTGNN matches its paper (MAE 2.69 / 3.05 at 15 / 30 min) |
 | _more parts coming_ | Emergency detector, app, … | Not started |

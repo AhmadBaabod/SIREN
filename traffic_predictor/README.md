@@ -57,8 +57,8 @@ Trained weights are in `models/`, so rerunning loads them instead of training ag
 | A. Data check | 34,272 steps × 207 sensors; **8.11%** of readings are 0 (missing). 77% of these come from outages where all sensors are 0 at once. |
 | B. Data pipeline | Same as MTGNN / DCRNN: zeros kept in inputs, 70/10/20 split (23,974 / 3,425 / 6,850 windows), train-only z-score, **masked** MAE/RMSE. |
 | C. LSTM baseline | One LSTM shared by all sensors, time history only (51k parameters). Beats naive and the DCRNN paper's FC-LSTM; still behind the graph models. |
-| D. GCN + GRU (T-GCN) | Cell from T-GCN's official code on DCRNN's road graph (14k parameters), MTGNN's recipe: Adam 1e-3, weight decay 1e-4, 100 epochs, curriculum learning. Code tested; full training on Colab next. |
-| E. MTGNN | Rebuilt from MTGNN's official code: learned graph, dilated inception, mix-hop graph convolution. 405,452 parameters with the 3 unused convolutions, the same as the original. Code tested; full training on Colab next. |
+| D. GCN + GRU (T-GCN) | Cell from T-GCN's official code on DCRNN's road graph (14k parameters), MTGNN's recipe: Adam 1e-3, weight decay 1e-4, 100 epochs, curriculum learning. Trained on a Kaggle T4 (12 s/epoch). Weakest learned model: behind the LSTM at every horizon. |
+| E. MTGNN | Rebuilt from MTGNN's official code: learned graph, dilated inception, mix-hop graph convolution. 405,452 parameters with the 3 unused convolutions, the same as the original. Trained on a Kaggle T4 (162 s/epoch, 4.5 h). **Matches the MTGNN paper and beats DCRNN** (one run; the paper averages 10). |
 
 Test split, masked metrics, MAE / RMSE in mph (`results.csv`):
 
@@ -68,9 +68,13 @@ Test split, masked metrics, MAE / RMSE in mph (`results.csv`):
 | DCRNN paper | – | 2.77 / 5.38 | 3.15 / 6.45 |
 | MTGNN paper (strongest reference) | – | 2.69 / 5.18 | 3.05 / 6.17 |
 | Naive: repeat last reading (ours) | 2.81 / 4.63 | 3.50 / 6.42 | 4.20 / 8.05 |
-| **LSTM baseline (ours)** | **2.40 / 4.24** | **3.01 / 5.90** | **3.62 / 7.26** |
-| GCN + GRU, T-GCN (ours) | train on Colab | | |
-| MTGNN re-implementation (ours) | train on Colab | | |
+| LSTM baseline (ours) | 2.40 / 4.24 | 3.01 / 5.90 | 3.62 / 7.26 |
+| GCN + GRU, T-GCN (ours) | 2.95 / 5.03 | 3.45 / 6.34 | 4.02 / 7.61 |
+| **MTGNN re-implementation (ours)** | **2.26 / 3.94** | **2.69 / 5.16** | **3.05 / 6.15** |
+
+![MAE by forecast horizon](figures/mae_by_horizon.png)
+
+![forecasts of all models on one sensor](figures/forecast_example_all_models.png)
 
 ![missing data](figures/metr_la_missing.png)
 

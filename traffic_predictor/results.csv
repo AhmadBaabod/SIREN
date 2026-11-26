@@ -5,3 +5,5 @@ DCRNN paper: DCRNN,,,2.77,5.38,3.15,6.45
 MTGNN paper: MTGNN,,,2.69,5.18,3.05,6.17
 Naive: repeat last reading,2.814,4.626,3.498,6.416,4.205,8.049
 LSTM baseline (ours),2.4,4.239,3.01,5.898,3.62,7.257
+"GCN + GRU, T-GCN (ours)",2.946,5.029,3.451,6.344,4.016,7.605
+MTGNN re-implementation (ours),2.26,3.938,2.689,5.162,3.052,6.153
