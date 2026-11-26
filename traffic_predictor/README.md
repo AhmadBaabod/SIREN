@@ -57,7 +57,7 @@ Trained weights are in `models/`, so rerunning loads them instead of training ag
 | A. Data check | 34,272 steps × 207 sensors; **8.11%** of readings are 0 (missing). 77% of these come from outages where all sensors are 0 at once. |
 | B. Data pipeline | Same as MTGNN / DCRNN: zeros kept in inputs, 70/10/20 split (23,974 / 3,425 / 6,850 windows), train-only z-score, **masked** MAE/RMSE. |
 | C. LSTM baseline | One LSTM shared by all sensors, time history only (51k parameters). Beats naive and the DCRNN paper's FC-LSTM; still behind the graph models. |
-| D. GCN + GRU (T-GCN) | Cell from T-GCN's official code on DCRNN's road graph (14k parameters), MTGNN's recipe: Adam 1e-3, weight decay 1e-4, 100 epochs, curriculum learning. Trained on a Kaggle T4 (12 s/epoch). Weakest learned model: behind the LSTM at every horizon. |
+| D. GCN + GRU (T-GCN) | Cell from T-GCN's official code on DCRNN's road graph (14k parameters), MTGNN's recipe: Adam 1e-3, weight decay 1e-4, 100 epochs, curriculum learning. Trained on a Kaggle T4 (12 s/epoch). Weakest learned model: behind the LSTM at every horizon. **v2 (part D5)** adds DCRNN's two-way, 2-hop diffusion convolution and an encoder–decoder (373k parameters, about 3 min/epoch on a T4): 0.7–0.9 mph better than T-GCN, ahead of the LSTM, and level with the DCRNN paper (2.74 vs 2.77 at 15 min, 3.16 vs 3.15 at 30 min). |
 | E. MTGNN | Rebuilt from MTGNN's official code: learned graph, dilated inception, mix-hop graph convolution. 405,452 parameters with the 3 unused convolutions, the same as the original. Trained on a Kaggle T4 (162 s/epoch, 4.5 h). **Matches the MTGNN paper and beats DCRNN** (one run; the paper averages 10). |
 
 Test split, masked metrics, MAE / RMSE in mph (`results.csv`):
@@ -70,7 +70,7 @@ Test split, masked metrics, MAE / RMSE in mph (`results.csv`):
 | Naive: repeat last reading (ours) | 2.81 / 4.63 | 3.50 / 6.42 | 4.20 / 8.05 |
 | LSTM baseline (ours) | 2.40 / 4.24 | 3.01 / 5.90 | 3.62 / 7.26 |
 | GCN + GRU, T-GCN (ours) | 2.95 / 5.03 | 3.45 / 6.34 | 4.02 / 7.61 |
-| T-GCN v2: diffusion GCN + GRU encoder–decoder (ours) | train on Kaggle | | |
+| T-GCN v2: diffusion GCN + GRU encoder–decoder (ours) | **2.25 / 3.88** | 2.74 / 5.29 | 3.16 / 6.45 |
 | **MTGNN re-implementation (ours)** | **2.26 / 3.94** | **2.69 / 5.16** | **3.05 / 6.15** |
 
 ![MAE by forecast horizon](figures/mae_by_horizon.png)

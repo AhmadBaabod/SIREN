@@ -28,9 +28,9 @@ requirements). Never put a part's files at the repo root; three more parts will 
 traffic_predictor/   Student 2 (this user)
   traffic_predictor.ipynb       THE single notebook (brief: one Colab notebook per student, runs start
                                 to end). Parts: A data check (done), B MTGNN/DCRNN pipeline (done),
-                                C LSTM (done), D GCN + GRU = T-GCN (trained), D5 T-GCN v2 (code done,
-                                train on Kaggle), E MTGNN re-implementation (trained), F results (done).
-                                D/E trained on Kaggle, see below.
+                                C LSTM (done), D GCN + GRU = T-GCN (trained), D5 T-GCN v2 (trained),
+                                E MTGNN re-implementation (trained), F results (done).
+                                D/D5/E trained on Kaggle, see below.
                                 Add new work as new parts here,
                                 not as new notebooks; all code inline so Colab needs no repo clone.
   data/README.md                sources; data/raw/ is gitignored, downloaded by the notebook
@@ -106,13 +106,19 @@ User decision: follow the strongest model's pipeline exactly. MTGNN (KDD 2020; M
 | Naive repeat-last-reading (ours) | 2.81 | 3.50 | 4.21 |
 | LSTM baseline (ours, part C) | 2.40 | 3.01 | 3.62 |
 | T-GCN (ours, part D) | 2.95 | 3.45 | 4.02 |
+| T-GCN v2 (ours, part D5) | 2.252 | 2.739 (RMSE 5.29) | 3.159 (RMSE 6.45) |
 | MTGNN re-implementation (ours, part E) | 2.26 | 2.689 (RMSE 5.16) | 3.052 (RMSE 6.15) |
 
 MTGNN rebuild equals the paper's MAE (one run vs the paper's 10-run mean) and beats DCRNN; best val 2.744.
 T-GCN is behind the LSTM at every horizon (best val 3.713, still improving at epoch 100; curriculum reached 12
 steps only at epoch 73).
 
-T-GCN v2 (part D5, model name `tgcn_v2`, user decision; not trained yet): DCRNN-style DCGRU encoder–decoder on the
+T-GCN v2 result (Kaggle T4, notebook `ahmadbabood2/notebook23b80212dd` version 1, 2026-11-26; only v2 trained,
+the other models were fetched from GitHub; ≈ 3 min/epoch, run 5 h 05 min): best val 2.838; test MAE 2.25 / 2.74 / 3.16
+at 5 / 15 / 30 min. Beats T-GCN by 0.7–0.9 and the LSTM, matches the DCRNN paper (2.77 / 3.15), best of all at
+5 min by 0.01, behind MTGNN from 15 min on (gap grows to ≈ 0.2 at 60 min). MTGNN stays the app's model.
+
+T-GCN v2 (part D5, model name `tgcn_v2`, user decision): DCRNN-style DCGRU encoder–decoder on the
 road graph. Diffusion conv with DCRNN's dual random walk, supports (D^-1 A)^T and (D_in^-1 A^T)^T, K = 2 with its
 `2 P x1 - x0` recurrence; 2 layers × 64 hidden (DCRNN's METR-LA setting, not the 128 first floated); decoder
 input = last prediction (GO = 0) + known time of day of the predicted step (tod + (t+1)/288 mod 1); gate bias 1.0,
